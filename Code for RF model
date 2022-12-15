@@ -1,4 +1,6 @@
 bdata<-read.table("~/R_projects/biobot/biobot_data_all.txt", sep="\t", header = T, quote = NULL)
+##for progressive updating the models, relevant availabe date were updated according for in the path of bdata
+
 bweek<-data[, -c(2, 5:7)]
 set.seed(123)
 #Set the training, testing and validation sets
