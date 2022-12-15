@@ -1,0 +1,131 @@
+bdata<-read.table("~/R_projects/biobot/biobot_data_all.txt", sep="\t", header = T, quote = NULL)
+bweek<-data[, -c(2, 5:7)]
+set.seed(123)
+#Set the training, testing and validation sets
+train <- sample(nrow(bweek), nrow(bweek)*0.7)
+bweek_train <- bweek[train, ]
+bweek_test <- bweek[-train, ]
+validation<-sample(nrow(bweek_test), nrow(bweek_test)*0.5)
+bweek_val<-bweek_test[validation, ]
+bweek_test <- bweek_test[-validation, ]
+
+library(randomForest)
+##search for mtry
+#replace the name of targts for all eight targets (i.e. HOS_7d, HOS_14d, HOS_21d, Hos_28d, ICU_7d, ICU_14d, ICU_21d, ICU_28d)
+#we use ICU_21d as an example here
+for(i in 1:15){  
+  
+  mtry_test <- randomForest(ICU_21d~., data=bweek_train, mtry=i)    
+  err<-mean(mtry_test$mse)
+  print(err)
+  
+  
+}  
+##select mtry 
+##search for ntree
+ntree_fit<-randomForest(ICU_21d~., data=bweek_train, mtry=4, ntree=500)
+
+plot(ntree_fit)
+##based on ntree_fit, chosse the mtry and ntree
+set.seed(123)
+bweek_train.forest <- randomForest(ICU_21d~., data = bweek_train, importance = TRUE, mtry=4, ntree=400,  keep.inbag=TRUE)
+bweek_train.forest
+##replace the name of the forest
+icu21d.forest<-bweek_train.forest
+
+#check the model performance for trainging data set
+bweek_predict <- predict(bweek_train.forest, bweek_train)
+cor.test(bweek_train$ICU_21d, bweek_predict)
+bweek_train$predict<-bweek_predict
+
+results<-bweek_train[, c(1,17)]
+write.csv(results, "ICU_21_training.csv")
+
+er=0
+sae=0
+for (i in 1:length(bweek_predict)){
+  j=(bweek_predict[i]-bweek_train$ICU_21d[i])^2
+  er=er+j
+  ae=abs(bweek_predict[i]-bweek_train$ICU_21d[i])
+  sae=sae+ae
+}
+
+rmse=sqrt(er/length(bweek_predict))
+mae=sae/length(bweek_predict)
+nrmse=rmse/mean(bweek_train$ICU_21d)
+rmse
+mae
+nrmse
+#check the model performance for test data set
+bweek_predict <- predict(bweek_train.forest, bweek_test)
+cor.test(bweek_test$ICU_21d, bweek_predict,)
+plot(bweek_test$ICU_21d, bweek_predict, main = 'training',
+     xlab = 'Admission numbers in next 21 days (patient/100k population)', ylab = 'Predict')
+abline(1, 1)
+bweek_test$predict<-bweek_predict
+results<-bweek_test[,c(1,17)]
+write.csv(results, "ICU_21_test.csv")
+
+er=0
+sae=0
+for (i in 1:length(bweek_predict)){
+  j=(bweek_predict[i]-bweek_test$ICU_21d[i])^2
+  er=er+j
+  ae=abs(bweek_predict[i]-bweek_test$ICU_21d[i])
+  sae=sae+ae
+}
+
+rmse=sqrt(er/length(bweek_predict))
+mae=sae/length(bweek_predict)
+nrmse=rmse/mean(bweek_test$ICU_21d)
+rmse
+mae
+nrmse
+
+##validation set performance
+bweek_predict <- predict(bweek_train.forest, bweek_val)
+
+cor.test(bweek_val$ICU_21d, bweek_predict,)
+bweek_val$predict<-bweek_predict
+results<-bweek_val[,c(1,17)]
+write.csv(results, "ICU_21_validation.csv")
+er=0
+sae=0
+for (i in 1:length(bweek_predict)){
+  j=(bweek_predict[i]-bweek_val$ICU_21d[i])^2
+  er=er+j
+  ae=abs(bweek_predict[i]-bweek_val$ICUd_21[i])
+  sae=sae+ae
+}
+
+rmse=sqrt(er/length(bweek_predict))
+mae=sae/length(bweek_predict)
+nrmse=rmse/mean(bweek_val$ICU_21d)
+rmse
+mae
+nrmse
+
+##overall performance
+
+bweek_predict <- predict(bweek_train.forest, bweek)
+cor.test(bweek$ICU_21d, bweek_predict,)
+bweek$predict<-bweek_predict
+results<-bweek[,c(1,17)]
+write.csv(results, "ICU_21_all.csv")
+
+er=0
+sae=0
+for (i in 1:length(bweek_predict)){
+  j=(bweek_predict[i]-bweek$ICU_21d[i])^2
+  er=er+j
+  ae=abs(bweek_predict[i]-bweek$ICU_21d[i])
+  sae=sae+ae
+}
+
+rmse=sqrt(er/length(bweek_predict))
+mae=sae/length(bweek_predict)
+nrmse=rmse/mean(bweek$ICU_21d)
+rmse
+mae
+nrmse
+
