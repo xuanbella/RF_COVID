@@ -1,51 +1,51 @@
 ##evaluate the one fator and two factor partial dependence for RF model (bweek_train.forest)
 library(randomForest)
 library(pdp)
-##here we use ICU_14d as an example 
+##here we use Hos1w as an example 
 ##one factor PDP--plot
 grid.arrange(
-  partial(icu14d.forest, pred.var = "CRNA", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Tw", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Population", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Vaccine_1st", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Vaccine_2nd", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "OverallVI", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Socioeconomic_status", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Minority_language", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Household_transportation", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Epidemiological_factors", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Healthcare_system", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "High_risk_environment", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Population_density", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Precipitation", plot = TRUE, rug = TRUE),
-  partial(icu14d.forest, pred.var = "Ta", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "CRNA", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Tw", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Population", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Vaccine_1st", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Vaccine_2nd", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "OverallVI", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Socioeconomic_status", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Minority_language", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Household_transportation", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Epidemiological_factors", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Healthcare_system", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "High_risk_environment", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Population_density", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Precipitation", plot = TRUE, rug = TRUE),
+  partial(Hos1w.forest, pred.var = "Ta", plot = TRUE, rug = TRUE),
 
 ##two factor PDP
-icu14.crna.v2<-partial(icu14d.forest, pred.var = c("CRNA","Vaccine_2nd"), chull = TRUE)
-icu14.crna.tw<-partial(icu14d.forest, pred.var = c("CRNA","Tw"), chull = TRUE)
-icu14.crna.hre<-partial(icu14d.forest, pred.var = c("CRNA","High_risk_environment"), chull = TRUE)
-icu14.crna.ov<-partial(icu14d.forest, pred.var = c("CRNA","OverallVI"), chull = TRUE)
+Hos1w.crna.v2<-partial(Hos1w.forest, pred.var = c("CRNA","Vaccine_2nd"), chull = TRUE)
+Hos1w.crna.tw<-partial(Hos1w.forest, pred.var = c("CRNA","Tw"), chull = TRUE)
+Hos1w.crna.hre<-partial(Hos1w.forest, pred.var = c("CRNA","High_risk_environment"), chull = TRUE)
+Hos1w.crna.ov<-partial(Hos1w.forest, pred.var = c("CRNA","OverallVI"), chull = TRUE)
 
-icu14.crna.ep<-partial(icu14d.forest, pred.var = c("CRNA","Epidemiological_factors"), chull = TRUE)
-icu14.crna.popd<-partial(icu14d.forest, pred.var = c("CRNA","Population_density"), chull = TRUE)
-icu14.crna.ov<-partial(icu14d.forest, pred.var = c("CRNA","OverallVI"), chull = TRUE)
-autoplot(icu14.crna.hre, contour = F, legend.title = "Partial\ndependence" )
-icu14.crna.v2
+Hos1w.crna.ep<-partial(Hos1w.forest, pred.var = c("CRNA","Epidemiological_factors"), chull = TRUE)
+Hos1w.crna.popd<-partial(Hos1w.forest, pred.var = c("CRNA","Population_density"), chull = TRUE)
+Hos1w.crna.ov<-partial(Hos1w.forest, pred.var = c("CRNA","OverallVI"), chull = TRUE)
+autoplot(Hos1w.crna.hre, contour = F, legend.title = "Partial\ndependence" )
+Hos1w.crna.v2
 
-icu14.crna.v2$group<-c('Vaccine_2nd')
-icu14.crna.tw$group<-c('Tw')
-icu14.crna.hre$group<-c('High_risk_environment')
-icu14.crna.ov$group<-c('OverallVI')
+Hos1w.crna.v2$group<-c('Vaccine_2nd')
+Hos1w.crna.tw$group<-c('Tw')
+Hos1w.crna.hre$group<-c('High_risk_environment')
+Hos1w.crna.ov$group<-c('OverallVI')
 
-colnames(icu14.crna.ov)[2]<-c("variables")
-ticu14p<-rbind(icu14.crna.v2, icu14.crna.tw)
-ticu14p<-rbind(ticu14p, icu14.crna.hre)
-ticu14p<-rbind(ticu14p, icu14.crna.ov)
+colnames(Hos1w.crna.ov)[2]<-c("variables")
+tHos1wp<-rbind(Hos1w.crna.v2, Hos1w.crna.tw)
+tHos1wp<-rbind(Hos1w, Hos1w.crna.hre)
+tHos1wp<-rbind(tHos1wp, Hos1w.crna.ov)
 
-ticu14p$group <- factor(ticu14p$group, levels = c("Vaccine_2nd", "Tw", "OverallVI", "High_risk_environment"))
+tHos1wp$group <- factor(tHos1wp$group, levels = c("Vaccine_2nd", "Tw", "OverallVI", "High_risk_environment"))
 
 ##plot two factor partial depedence
-picu14d<-ggplot(ticu14p, aes(x=CRNA, y=variables))+
+pHos1w<-ggplot(tHos1wp, aes(x=CRNA, y=variables))+
   geom_raster(aes(fill=yhat))+
   facet_wrap(~group, scales = "free", nrow = 1)+
   scale_fill_continuous(type = "viridis") +
@@ -53,6 +53,6 @@ picu14d<-ggplot(ticu14p, aes(x=CRNA, y=variables))+
   labs(x="CRNA (copies/mL)",
        y="Explanatory factors",
        title = "Partial depedence for icu_14d")
-picu14d
+pHos1w
 
 
