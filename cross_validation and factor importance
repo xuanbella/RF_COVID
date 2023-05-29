@@ -4,16 +4,16 @@ importance_bweek<- data.frame(importance(bweek_train.forest), check.names = FALS
 head(importance_bweek)
 
 ##use rfpermut() for factor importance analysis
-#here we use ICU_21d as ana example for the targets
+#here we use Hos1w as ana example for the targets
 library(rfPermute)
 set.seed(123)
 bweek_train<-bweek_train[,1:16]
-bweek_rfP <- rfPermute(ICU_21d~., data = bweek_train, importance = TRUE, ntree = 300, mtry=4, nrep = 1000, num.cores = 1)
+bweek_rfP <- rfPermute(Hos1w~., data = bweek_train, importance = TRUE, ntree = 300, mtry=4, nrep = 1000, num.cores = 1)
 bweek_rfP
 
 importance_bweek.scale <- data.frame(importance(bweek_rfP, scale = TRUE), check.names = FALSE)
 importance_bweek.scale
-write.csv(importance_bweek.scale, "ICU_21_importance.csv")
+write.csv(importance_bweek.scale, "Hos1w_importance.csv")
 
 ##Corss-validation
 library(randomForest)
@@ -35,9 +35,9 @@ head(bweek_train.cv.mean, 15)
 
 library(ggplot2)
 dev.new(width=20, height=20,pointsize=12)
-cross_icu21d<-ggplot(bweek_train.cv.mean, aes(Group.1, x)) +
+Hos1w<-ggplot(bweek_train.cv.mean, aes(Group.1, x)) +
   geom_line() +
   theme(panel.grid = element_blank(), panel.background = element_rect(color = 'black', fill = 'transparent')) +
   labs(title = '',x = 'Number of variables', y = 'Cross-validation error')
 
-cross_icu21d
+cross_Hos1w
